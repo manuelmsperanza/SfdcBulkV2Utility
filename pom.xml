@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.hoffnungland</groupId>
-  <artifactId>SfdcBulkV2Utility</artifactId>
+  <artifactId>sfdcbulkv2utility</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
   <name>SfdcBulkV2Utility</name>
