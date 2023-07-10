@@ -106,5 +106,49 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+		<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<appendAssemblyId>false</appendAssemblyId>
+					<finalName>${project.name}</finalName>
+					<archive>
+						<manifest>
+							<mainClass>com.hoffnungland.sfdcBulkV2Utility.App</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jarsigner-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>sign</id>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+						<configuration>
+							<keystore>${hoffnunglandJksPath}</keystore>
+							<alias>${hoffnunglandJksEntry}</alias>
+							<storepass>${hoffnunglandJksPasswd}</storepass>
+							<keypass>${hoffnunglandKeyPasswd}</keypass>
+							<tsa>${hoffnunglandTsaUrl}</tsa>
+						</configuration>
+					</execution>
+					<execution>
+						<id>verify</id>
+						<goals>
+							<goal>verify</goal>
+						</goals>
+						<configuration>
+							<certs>true</certs>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+	</plugins>
   </build>
 </project>
