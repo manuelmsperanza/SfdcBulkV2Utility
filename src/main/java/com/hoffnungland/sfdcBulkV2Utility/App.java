@@ -14,7 +14,7 @@ public class App
 		String baseUrl = "";
 		String jobId = "";
 		String apiVersion = "v58.0";
-		String[] queryLocators = {"", ""};
+		String[] queryLocators = {null};
 		String csvContent = "";
 		String archiveFilenamePrefix = "";
 		String delTmpFilenamePrefix = "";
@@ -33,10 +33,7 @@ public class App
 			//java.io.Reader targetStreamReader = new InputStreamReader(new java.io.ByteArrayInputStream(response.getBytes(java.nio.charset.StandardCharsets.ISO_8859_1)), java.nio.charset.StandardCharsets.ISO_8859_1);
 			//java.io.Reader stringReader = new StringReader(response);
 			
-			
-			
 			int loopIdx = 0;
-			
 			
 			for(String curQueryLocator : queryLocators) {
 				
@@ -46,8 +43,6 @@ public class App
 				csvArchiver.parseResponse(response, loopIdx);
 				loopIdx++;
 			}
-			
-			
 			
 			csvArchiver.finalize();
 			

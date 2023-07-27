@@ -57,14 +57,17 @@ public class CsvArchiver {
 		CSVParser parser = CSVParser.parse(response, csvFormatRetrieve);
 		for(CSVRecord curRecord : parser.getRecords()) {
 			boolean doPrint = true;
+			String[] recordValues = curRecord.values();
 			if(isHeader) {
 				isHeader = false;
 				if(loopIdx == 0) {
-					for(String curRecordValue : curRecord.values()) {
-						idFieldPosition++;
+					int tmpIdFieldPos = -1;
+					for(String curRecordValue : recordValues) {
+						tmpIdFieldPos++;
 						if(curRecordValue.equalsIgnoreCase("id")) {
-							break;
+							this.idFieldPosition = tmpIdFieldPos;
 						}
+						recordValues[tmpIdFieldPos] = curRecordValue.replace('.', '_');
 					}
 				} else {
 					doPrint = false;
@@ -72,8 +75,8 @@ public class CsvArchiver {
 			}
 			
 			if(doPrint) {
-				csvPrinterArchive.printRecord(curRecord.values());
-				csvPrinterTmpDel.printRecord(curRecord.values()[idFieldPosition]);
+				csvPrinterArchive.printRecord(recordValues);
+				csvPrinterTmpDel.printRecord(recordValues[this.idFieldPosition]);
 			}
 			
 		}
