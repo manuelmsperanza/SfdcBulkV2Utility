@@ -16,7 +16,8 @@ public class App
 		String apiVersion = "v58.0";
 		String[] queryLocators = {null};
 		String csvContent = "";
-		String archiveFilenamePrefix = "";
+		String archiveFilePath = ".";
+		String archiveFilenamePrefix = ".";
 		String delTmpFilenamePrefix = "";
 		try{
 			
@@ -26,7 +27,7 @@ public class App
 			//String response = V2Ingest.changeJobStatus(sessionId, baseUrl, apiVersion, jobId, "UploadComplete");
 			
 			CsvArchiver csvArchiver = new CsvArchiver();
-			csvArchiver.initialize(archiveFilenamePrefix, delTmpFilenamePrefix);
+			csvArchiver.initialize(archiveFilePath, archiveFilenamePrefix, delTmpFilenamePrefix);
 			
 			
 			//java.io.InputStream targetStream = new java.io.ByteArrayInputStream(response.getBytes(java.nio.charset.StandardCharsets.UTF_8));

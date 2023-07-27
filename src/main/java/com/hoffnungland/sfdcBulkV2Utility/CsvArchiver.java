@@ -28,7 +28,7 @@ public class CsvArchiver {
 	CSVPrinter csvPrinterTmpDel;
 	int idFieldPosition = -1;
 	
-	public void initialize(String archiveFilenamePrefix, String delTmpFilenamePrefix) throws IOException {
+	public void initialize(String archiveFilePath, String archiveFilenamePrefix, String delTmpFilenamePrefix) throws IOException {
 		this.csvFormatRetrieve = CSVFormat.Builder.create().setQuoteMode(QuoteMode.ALL).setDelimiter(';').build();
 		this.csvFormatArchive = CSVFormat.Builder.create().setQuoteMode(QuoteMode.ALL).setDelimiter('|').build();
 		this.csvFormatTmpDel = CSVFormat.Builder.create().setQuoteMode(QuoteMode.NONE).setEscape('"').setDelimiter('|').build();
@@ -37,7 +37,7 @@ public class CsvArchiver {
 		DateFormat dateFormat = new SimpleDateFormat(pattern);
 		String archivingDate = dateFormat.format(new java.util.Date());
 		
-		this.outBulkAccountErrorIndivZip = new ZipOutputStream(new FileOutputStream(archiveFilenamePrefix + "_" + archivingDate + ".zip"));
+		this.outBulkAccountErrorIndivZip = new ZipOutputStream(new FileOutputStream(archiveFilePath + archiveFilenamePrefix + "_" + archivingDate + ".zip"));
 		this.outBulkAccountErrorIndivZip.putNextEntry(new ZipEntry(archiveFilenamePrefix + ".csv"));
 		this.buffWriter = new BufferedWriter(new OutputStreamWriter(this.outBulkAccountErrorIndivZip, StandardCharsets.ISO_8859_1));
 		this.csvPrinterArchive = this.csvFormatArchive.print(this.buffWriter);
