@@ -29,6 +29,30 @@ public class V2Ingest {
 		return response;
 	}
 	
+	public static String getQueryResult(String sessionId, String baseUrl, String apiVersion, String jobId, String queryLocator, int maxRecords) throws IOException {
+		String response = null;
+		
+		try(CloseableHttpClient httpclient = HttpClients.createDefault()){
+			String parameters = null;
+			
+			if(queryLocator != null && !queryLocator.isEmpty()) {
+				parameters = "locator=" + queryLocator;
+			}
+			if(maxRecords > 0) {
+				parameters = (parameters != null ? parameters + "&" : "") + "maxRecords=" + maxRecords;
+			}
+			
+			HttpGet getRequest = new HttpGet(baseUrl + "/services/data/" + apiVersion + "/jobs/query/" + jobId + "/results" + (parameters == null ? "" : "?" + parameters) );
+			getRequest.addHeader("Authorization", "Bearer " + sessionId);
+			
+			BasicHttpClientResponseHandler responseClientHandler = new BasicHttpClientResponseHandler();
+			response = httpclient.execute(getRequest, responseClientHandler);
+			
+		}
+		
+		return response;
+	}
+	
 	public static String createJob(String sessionId, String baseUrl, String apiVersion, String objectName, String contentType, String operation, String columnDelimiter) throws IOException {
 		String response = null;
 		
