@@ -16,7 +16,7 @@ public class App
 		String apiVersion = "v58.0";
 		String[] queryLocators = {null};
 		String csvContent = "";
-		String archiveFilePath = ".";
+		String archiveFilePath = "./";
 		String archiveFilenamePrefix = ".";
 		String delTmpFilenamePrefix = "";
 		try{
