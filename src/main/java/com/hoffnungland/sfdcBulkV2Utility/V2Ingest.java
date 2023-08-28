@@ -24,6 +24,7 @@ public class V2Ingest {
 			
 			BasicHttpClientResponseHandler responseClientHandler = new BasicHttpClientResponseHandler();
 			response = httpclient.execute(getRequest, responseClientHandler);
+			
 		}
 		
 		return response;

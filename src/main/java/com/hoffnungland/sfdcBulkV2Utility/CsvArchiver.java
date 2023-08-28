@@ -21,41 +21,48 @@ public class CsvArchiver {
 	
 	CSVFormat csvFormatRetrieve;
 	CSVFormat csvFormatArchive;
-	CSVFormat csvFormatTmpDel;
-	ZipOutputStream outBulkAccountErrorIndivZip;
+	CSVFormat csvFormatOnlyId;
+	ZipOutputStream outBulkZip;
 	BufferedWriter buffWriter;
 	CSVPrinter csvPrinterArchive;
-	CSVPrinter csvPrinterTmpDel;
+	CSVPrinter csvPrinterOnlyId;
 	int idFieldPosition = -1;
 	
-	public void initialize(String archiveFilePath, String archiveFilenamePrefix, String delTmpFilenamePrefix) throws IOException {
+	public void initialize(String archiveFilePath, String archiveFilenamePrefix, String onlyIdFilenamePrefix) throws IOException {
 		this.csvFormatRetrieve = CSVFormat.Builder.create().setQuoteMode(QuoteMode.ALL).setDelimiter(';').build();
 		this.csvFormatArchive = CSVFormat.Builder.create().setQuoteMode(QuoteMode.ALL).setDelimiter('|').build();
-		this.csvFormatTmpDel = CSVFormat.Builder.create().setQuoteMode(QuoteMode.NONE).setEscape('"').setDelimiter('|').build();
+		
 		
 		String pattern = "yyyyMMddHHmmss";
 		DateFormat dateFormat = new SimpleDateFormat(pattern);
 		String archivingDate = dateFormat.format(new java.util.Date());
 		
-		this.outBulkAccountErrorIndivZip = new ZipOutputStream(new FileOutputStream(archiveFilePath + archiveFilenamePrefix + "_" + archivingDate + ".zip"));
-		this.outBulkAccountErrorIndivZip.putNextEntry(new ZipEntry(archiveFilenamePrefix + ".csv"));
-		this.buffWriter = new BufferedWriter(new OutputStreamWriter(this.outBulkAccountErrorIndivZip, StandardCharsets.ISO_8859_1));
+		this.outBulkZip = new ZipOutputStream(new FileOutputStream(archiveFilePath + archiveFilenamePrefix + "_" + archivingDate + ".zip"));
+		this.outBulkZip.putNextEntry(new ZipEntry(archiveFilenamePrefix + ".csv"));
+		this.buffWriter = new BufferedWriter(new OutputStreamWriter(this.outBulkZip, StandardCharsets.ISO_8859_1));
 		this.csvPrinterArchive = this.csvFormatArchive.print(this.buffWriter);
-		this.csvPrinterTmpDel = new CSVPrinter(new FileWriter(delTmpFilenamePrefix + ".csv"), this.csvFormatTmpDel);
 		
+		if(onlyIdFilenamePrefix != null) {
+			this.csvFormatOnlyId = CSVFormat.Builder.create().setQuoteMode(QuoteMode.NONE).setEscape('"').setDelimiter('|').build();
+			this.csvPrinterOnlyId = new CSVPrinter(new FileWriter(onlyIdFilenamePrefix + ".csv"), this.csvFormatOnlyId);
+		}
 	}
 	
 	public void finalize() throws IOException {
-		csvPrinterArchive.close();
+		this.csvPrinterArchive.close();
 		
-		csvPrinterTmpDel.close();
-		buffWriter.close();
+		if(this.csvPrinterOnlyId != null) {
+			this.csvPrinterOnlyId.close();
+		}
+		
+		this.buffWriter.close();
 	}
 	
 	public void parseResponse(String response, int loopIdx) throws IOException {
 		boolean isHeader = true;
 		CSVParser parser = CSVParser.parse(response, csvFormatRetrieve);
 		for(CSVRecord curRecord : parser.getRecords()) {
+			//System.out.println(curRecord);
 			boolean doPrint = true;
 			String[] recordValues = curRecord.values();
 			if(isHeader) {
@@ -75,13 +82,17 @@ public class CsvArchiver {
 			}
 			
 			if(doPrint) {
-				csvPrinterArchive.printRecord(recordValues);
-				csvPrinterTmpDel.printRecord(recordValues[this.idFieldPosition]);
+				this.csvPrinterArchive.printRecord(recordValues);
+				if(this.csvPrinterOnlyId != null) {
+					this.csvPrinterOnlyId.printRecord(recordValues[this.idFieldPosition]);
+				}
 			}
 			
 		}
-		csvPrinterArchive.flush();
-		csvPrinterTmpDel.flush();
+		this.csvPrinterArchive.flush();
+		if(this.csvPrinterOnlyId != null) {
+			this.csvPrinterOnlyId.flush();
+		}
 	}
 	
 	
