@@ -87,6 +87,21 @@ public class V2Ingest {
 		return response;
 	}
 	
+	public static String getJobInfo(String sessionId, String baseUrl, String apiVersion, String jodId) throws IOException {
+		String response = null;
+		
+		try(CloseableHttpClient httpclient = HttpClients.createDefault()){
+			
+			HttpGet getRequest = new HttpGet(baseUrl + "/services/data/" + apiVersion + "/jobs/ingest/" + jodId);
+			getRequest.addHeader("Authorization", "Bearer " + sessionId);
+			
+			BasicHttpClientResponseHandler responseClientHandler = new BasicHttpClientResponseHandler();
+			response = httpclient.execute(getRequest, responseClientHandler);
+		}
+		
+		return response;
+	}
+	
 	public static String changeJobStatus(String sessionId, String baseUrl, String apiVersion, String jodId, String status) throws IOException {
 		String response = null;
 		
