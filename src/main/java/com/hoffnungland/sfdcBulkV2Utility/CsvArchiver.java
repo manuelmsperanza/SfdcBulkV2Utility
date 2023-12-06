@@ -28,9 +28,55 @@ public class CsvArchiver {
 	CSVPrinter csvPrinterOnlyId;
 	int idFieldPosition = -1;
 	
-	public void initialize(String archiveFilePath, String archiveFilenamePrefix, String onlyIdFilenamePrefix) throws IOException {
-		this.csvFormatRetrieve = CSVFormat.Builder.create().setQuoteMode(QuoteMode.ALL).setDelimiter(';').build();
-		this.csvFormatArchive = CSVFormat.Builder.create().setQuoteMode(QuoteMode.ALL).setDelimiter('|').build();
+	public void initialize(String archiveFilePath, String archiveFilenamePrefix, String onlyIdFilenamePrefix, String retrieveDelimiter, String archiveDelimiter) throws IOException {
+		char retrieveDelimiterChar = ',';
+		switch (retrieveDelimiter) {
+		case "BACKQUOTE":
+			retrieveDelimiterChar = '`';
+			break;
+		case "CARET":
+			retrieveDelimiterChar = '^';
+			break;
+		case "COMMA":
+			retrieveDelimiterChar = ',';
+			break;
+		case "PIPE":
+			retrieveDelimiterChar = '|';
+			break;
+		case "SEMICOLON":
+			retrieveDelimiterChar = ';';
+			break;
+		case "TAB":
+			retrieveDelimiterChar = '\t';
+			break;
+
+		}
+		
+		this.csvFormatRetrieve = CSVFormat.Builder.create().setQuoteMode(QuoteMode.ALL).setDelimiter(retrieveDelimiterChar).build();
+		
+		char archiveDelimiterChar = ',';
+		switch (archiveDelimiter) {
+		case "BACKQUOTE":
+			archiveDelimiterChar = '`';
+			break;
+		case "CARET":
+			archiveDelimiterChar = '^';
+			break;
+		case "COMMA":
+			archiveDelimiterChar = ',';
+			break;
+		case "PIPE":
+			archiveDelimiterChar = '|';
+			break;
+		case "SEMICOLON":
+			archiveDelimiterChar = ';';
+			break;
+		case "TAB":
+			archiveDelimiterChar = '\t';
+			break;
+
+		}
+		this.csvFormatArchive = CSVFormat.Builder.create().setQuoteMode(QuoteMode.ALL).setDelimiter(archiveDelimiterChar).build();
 		
 		
 		String pattern = "yyyyMMddHHmmss";

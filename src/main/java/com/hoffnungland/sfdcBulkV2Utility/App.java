@@ -2,55 +2,44 @@ package com.hoffnungland.sfdcBulkV2Utility;
 
 import java.io.IOException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Hello world!
  *
  */
 public class App 
 {
-		public static void main(String[] args) {
 		
+	private static final Logger logger = LogManager.getLogger(App.class);
+	
+	public static void main(String[] args) {
+		
+		logger.traceEntry();
+			
 		String sessionId = "";
 		String baseUrl = "";
+		String apiVersion = "v59.0";
 		String jobId = "";
-		String apiVersion = "v58.0";
-		String[] queryLocators = {null};
-		String csvContent = "";
-		String archiveFilePath = "./";
+		String jobName = "";
+		int sleepTime = 60;
+		String query = "";
+		String columnDelimiter = "PIPE";
+		String tmpDir = "";
+		String outputDir = "";
 		String archiveFilenamePrefix = ".";
 		String delTmpFilenamePrefix = "";
+		
 		try{
 			
-			//String response = V2Ingest.checkLimits(sessionId, baseUrl, apiVersion);
-			//String response = V2Ingest.createJob(sessionId, baseUrl, apiVersion, "Offerte_Promozioni__c", "CSV", "update", "SEMICOLON");
-			//String response = V2Ingest.uploadCsvContent(sessionId, baseUrl, apiVersion, jobId, csvContent);
-			//String response = V2Ingest.changeJobStatus(sessionId, baseUrl, apiVersion, jobId, "UploadComplete");
+			V2Query.extractV2Query(sessionId, baseUrl, apiVersion, jobName, sleepTime, query, columnDelimiter, tmpDir, outputDir, archiveFilenamePrefix, delTmpFilenamePrefix);
 			
-			CsvArchiver csvArchiver = new CsvArchiver();
-			csvArchiver.initialize(archiveFilePath, archiveFilenamePrefix, delTmpFilenamePrefix);
-			
-			
-			//java.io.InputStream targetStream = new java.io.ByteArrayInputStream(response.getBytes(java.nio.charset.StandardCharsets.UTF_8));
-			//java.io.Reader targetStreamReader = new InputStreamReader(new java.io.ByteArrayInputStream(response.getBytes(java.nio.charset.StandardCharsets.ISO_8859_1)), java.nio.charset.StandardCharsets.ISO_8859_1);
-			//java.io.Reader stringReader = new StringReader(response);
-			
-			int loopIdx = 0;
-			
-			for(String curQueryLocator : queryLocators) {
-				
-				String response = V2Ingest.getQueryResult(sessionId, baseUrl, apiVersion, jobId, curQueryLocator, -1);
-				//System.out.println(response);
-				
-				csvArchiver.parseResponse(response, loopIdx);
-				loopIdx++;
-			}
-			
-			csvArchiver.finalize();
-			
-		} catch (IOException e) {
+		} catch (IOException | InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
+		logger.traceExit();
 	}
 }

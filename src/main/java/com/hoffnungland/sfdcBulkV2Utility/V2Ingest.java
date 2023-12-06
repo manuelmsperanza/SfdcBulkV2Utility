@@ -11,8 +11,12 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class V2Ingest {
+	
+	private static final Logger logger = LogManager.getLogger(V2Ingest.class);
 	
 	public static String checkLimits(String sessionId, String baseUrl, String apiVersion) throws IOException {
 		String response = null;
@@ -30,29 +34,7 @@ public class V2Ingest {
 		return response;
 	}
 	
-	public static String getQueryResult(String sessionId, String baseUrl, String apiVersion, String jobId, String queryLocator, int maxRecords) throws IOException {
-		String response = null;
-		
-		try(CloseableHttpClient httpclient = HttpClients.createDefault()){
-			String parameters = null;
-			
-			if(queryLocator != null && !queryLocator.isEmpty()) {
-				parameters = "locator=" + queryLocator;
-			}
-			if(maxRecords > 0) {
-				parameters = (parameters != null ? parameters + "&" : "") + "maxRecords=" + maxRecords;
-			}
-			
-			HttpGet getRequest = new HttpGet(baseUrl + "/services/data/" + apiVersion + "/jobs/query/" + jobId + "/results" + (parameters == null ? "" : "?" + parameters) );
-			getRequest.addHeader("Authorization", "Bearer " + sessionId);
-			
-			BasicHttpClientResponseHandler responseClientHandler = new BasicHttpClientResponseHandler();
-			response = httpclient.execute(getRequest, responseClientHandler);
-			
-		}
-		
-		return response;
-	}
+	
 	
 	public static String createJob(String sessionId, String baseUrl, String apiVersion, String objectName, String contentType, String operation, String columnDelimiter) throws IOException {
 		String response = null;
