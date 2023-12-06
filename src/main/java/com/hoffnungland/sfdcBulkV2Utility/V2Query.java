@@ -304,7 +304,37 @@ public class V2Query {
 		
 		long totalRecord = 0;
 		CsvArchiver csvArchiver = new CsvArchiver();
-		csvArchiver.initialize(outputDir, archiveFilenamePrefix, tmpDir + delTmpFilenamePrefix, columnDelimiter, columnDelimiter);
+		
+		char retrieveDelimiterChar = ',';
+		char archiveDelimiterChar = ',';
+		switch (columnDelimiter) {
+		case "BACKQUOTE":
+			retrieveDelimiterChar = '`';
+			archiveDelimiterChar = '`';
+			break;
+		case "CARET":
+			retrieveDelimiterChar = '^';
+			archiveDelimiterChar = '^';
+			break;
+		case "COMMA":
+			retrieveDelimiterChar = ',';
+			archiveDelimiterChar = ',';
+			break;
+		case "PIPE":
+			retrieveDelimiterChar = '|';
+			archiveDelimiterChar = '|';
+			break;
+		case "SEMICOLON":
+			retrieveDelimiterChar = ';';
+			archiveDelimiterChar = ';';
+			break;
+		case "TAB":
+			retrieveDelimiterChar = '\t';
+			archiveDelimiterChar = '\t';
+			break;
+		}
+		
+		csvArchiver.initialize(outputDir, archiveFilenamePrefix, tmpDir + delTmpFilenamePrefix, retrieveDelimiterChar, archiveDelimiterChar);
 		int loopIdx = 0;
 		skipBulkV2Query = false;
 		do {
@@ -317,7 +347,7 @@ public class V2Query {
 			
 			csvArchiver.parseResponse(jobResponse.body, loopIdx++);
 			
-			writeJsonProps(fileName, "{\"requestLocator\" : \"" + requestLocator + "\", \"totalRecord\": " + totalRecord + "}");
+			writeJsonProps(fileName, "{\"requestLocator\" : \"" + requestLocator + "\"}");
 
 			if(requestLocator == null || "".equals(requestLocator) || "null".equals(requestLocator)){
 				skipBulkV2Query = true;

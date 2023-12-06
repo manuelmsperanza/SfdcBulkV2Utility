@@ -32,59 +32,12 @@ public class CsvArchiver {
 	CSVPrinter csvPrinterOnlyId;
 	int idFieldPosition = -1;
 	
-	public void initialize(String archiveFilePath, String archiveFilenamePrefix, String onlyIdFilenamePrefix, String retrieveDelimiter, String archiveDelimiter) throws IOException {
+	public void initialize(String archiveFilePath, String archiveFilenamePrefix, String onlyIdFilenamePrefix, char retrieveDelimiterChar, char archiveDelimiterChar) throws IOException {
 		
 		logger.traceEntry();
 		
-		char retrieveDelimiterChar = ',';
-		switch (retrieveDelimiter) {
-		case "BACKQUOTE":
-			retrieveDelimiterChar = '`';
-			break;
-		case "CARET":
-			retrieveDelimiterChar = '^';
-			break;
-		case "COMMA":
-			retrieveDelimiterChar = ',';
-			break;
-		case "PIPE":
-			retrieveDelimiterChar = '|';
-			break;
-		case "SEMICOLON":
-			retrieveDelimiterChar = ';';
-			break;
-		case "TAB":
-			retrieveDelimiterChar = '\t';
-			break;
-
-		}
-		
 		this.csvFormatRetrieve = CSVFormat.Builder.create().setQuoteMode(QuoteMode.ALL).setDelimiter(retrieveDelimiterChar).build();
-		
-		char archiveDelimiterChar = ',';
-		switch (archiveDelimiter) {
-		case "BACKQUOTE":
-			archiveDelimiterChar = '`';
-			break;
-		case "CARET":
-			archiveDelimiterChar = '^';
-			break;
-		case "COMMA":
-			archiveDelimiterChar = ',';
-			break;
-		case "PIPE":
-			archiveDelimiterChar = '|';
-			break;
-		case "SEMICOLON":
-			archiveDelimiterChar = ';';
-			break;
-		case "TAB":
-			archiveDelimiterChar = '\t';
-			break;
-
-		}
 		this.csvFormatArchive = CSVFormat.Builder.create().setQuoteMode(QuoteMode.ALL).setDelimiter(archiveDelimiterChar).build();
-		
 		
 		String pattern = "yyyyMMddHHmmss";
 		DateFormat dateFormat = new SimpleDateFormat(pattern);
@@ -95,7 +48,7 @@ public class CsvArchiver {
 		this.buffWriter = new BufferedWriter(new OutputStreamWriter(this.outBulkZip, StandardCharsets.ISO_8859_1));
 		this.csvPrinterArchive = this.csvFormatArchive.print(this.buffWriter);
 		
-		if(onlyIdFilenamePrefix != null) {
+		if(onlyIdFilenamePrefix != null && !onlyIdFilenamePrefix.isEmpty()) {
 			this.csvFormatOnlyId = CSVFormat.Builder.create().setQuoteMode(QuoteMode.NONE).setEscape('"').setDelimiter('|').build();
 			this.csvPrinterOnlyId = new CSVPrinter(new FileWriter(onlyIdFilenamePrefix + ".csv"), this.csvFormatOnlyId);
 		}
@@ -117,9 +70,9 @@ public class CsvArchiver {
 	public void parseResponse(String response, int loopIdx) throws IOException {
 		logger.traceEntry();
 		boolean isHeader = true;
-		CSVParser parser = CSVParser.parse(response, csvFormatRetrieve);
+		CSVParser parser = CSVParser.parse(response, this.csvFormatRetrieve);
 		for(CSVRecord curRecord : parser.getRecords()) {
-			//System.out.println(curRecord);
+			logger.debug(curRecord);
 			boolean doPrint = true;
 			String[] recordValues = curRecord.values();
 			if(isHeader) {
@@ -152,6 +105,5 @@ public class CsvArchiver {
 		}
 		logger.traceExit();
 	}
-	
 	
 }
