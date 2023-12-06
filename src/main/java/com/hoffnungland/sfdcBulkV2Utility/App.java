@@ -1,5 +1,6 @@
 package com.hoffnungland.sfdcBulkV2Utility;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
@@ -24,21 +25,30 @@ public class App
 		String jobId = "";
 		String jobName = "";
 		int sleepTime = 60;
+		String operation = "query";
 		String query = "";
 		String columnDelimiter = "PIPE";
 		String tmpDir = "";
 		String outputDir = "";
-		String archiveFilenamePrefix = ".";
-		String delTmpFilenamePrefix = "";
+		String archiveFilenamePrefix = "";
+		String delTmpFilenamePrefix = null;
 		
 		try{
 			
-			V2Query.extractV2Query(sessionId, baseUrl, apiVersion, jobName, sleepTime, query, columnDelimiter, tmpDir, outputDir, archiveFilenamePrefix, delTmpFilenamePrefix);
+			V2Query.extractV2Query(sessionId, baseUrl, apiVersion, jobName, sleepTime, operation, query, columnDelimiter, tmpDir, outputDir, archiveFilenamePrefix, delTmpFilenamePrefix);
+			
+			String tmpFileName = tmpDir + jobName + ".json";
+			File jsonFile = new File(tmpFileName);
+		    if (jsonFile.delete()) { 
+		      logger.info("Deleted the file: " + jsonFile.getName());
+		    } else {
+		      logger.error("Failed to delete the file.");
+		    } 
 			
 		} catch (IOException | InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
 
 		logger.traceExit();
 	}

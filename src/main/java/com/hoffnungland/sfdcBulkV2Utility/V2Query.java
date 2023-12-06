@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Map.Entry;
 
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
@@ -34,28 +35,27 @@ public class V2Query {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 		JsonObject jsonObject = null;
-		// JsonObject innerObject = null;
+		JsonObject innerObject = null;
 
 		if (jsonFile.exists()) {
 
 			try (FileReader fr = new FileReader(jsonFile)) {
 				JsonElement jsonElement = JsonParser.parseReader(fr);
 				jsonObject = jsonElement.getAsJsonObject();
-				// innerObject = jsonObject.getAsJsonObject("query");
+				innerObject = jsonObject.getAsJsonObject("query");
 			}
 		} else {
 			jsonObject = new JsonObject();
-			// innerObject = new JsonObject();
-			// jsonObject.add("query", innerObject);
+			innerObject = new JsonObject();
+			jsonObject.add("query", innerObject);
 		}
 
 		JsonElement jsonElement = JsonParser.parseString(jobInfo);
-		jsonObject.add("query", jsonElement);
-		/*
-		 * innerObject.addProperty("id", input_row.id); innerObject.addProperty("state",
-		 * input_row.state);
-		 */
-
+		JsonObject srcJsonObject = jsonElement.getAsJsonObject();
+		for(Entry<String, JsonElement> curEntry : srcJsonObject.entrySet()) {
+			innerObject.add(curEntry.getKey(), curEntry.getValue());
+		}
+		
 		try (FileWriter fw = new FileWriter(jsonFile)) {
 			gson.toJson(jsonObject, fw);
 		}
@@ -222,7 +222,7 @@ public class V2Query {
 			logger.traceExit();
 			return;
 		}
-		
+		skipWaitV2QueryCompletion = false;
 		do {
 
 			String jobResponse = getJobInfo(sessionId, baseUrl, apiVersion, jobId);
@@ -234,13 +234,13 @@ public class V2Query {
 			case "InProgress":
 			case "UploadComplete":
 				skipWaitV2QueryCompletion = false;
-				logger.info("Sleep " + sleepTime + "[s]");
+				logger.info("Sleep " + sleepTime + " [s]");
 				Thread.sleep(sleepTime*1000);
 				break;
 			default:
 				skipWaitV2QueryCompletion = true;
 			}
-		} while (skipWaitV2QueryCompletion);
+		} while (!skipWaitV2QueryCompletion);
 
 		logger.traceExit();
 
@@ -306,6 +306,7 @@ public class V2Query {
 		CsvArchiver csvArchiver = new CsvArchiver();
 		csvArchiver.initialize(outputDir, archiveFilenamePrefix, tmpDir + delTmpFilenamePrefix, columnDelimiter, columnDelimiter);
 		int loopIdx = 0;
+		skipBulkV2Query = false;
 		do {
 			SfdcHttpClientResponse jobResponse = getQueryResult(sessionId, baseUrl, apiVersion, jobId, requestLocator, 0);
 			
@@ -314,7 +315,6 @@ public class V2Query {
 			totalRecord += Integer.valueOf(numberofRows == null ? "0" : numberofRows);
 			logger.info("Sforce-Locator: " + requestLocator + " Sforce-NumberOfRecords: " + numberofRows + " total: " + totalRecord);
 			
-			//targetStream = new java.io.ByteArrayInputStream(row4.ResponseContent.getBytes(java.nio.charset.StandardCharsets.ISO_8859_1));
 			csvArchiver.parseResponse(jobResponse.body, loopIdx++);
 			
 			writeJsonProps(fileName, "{\"requestLocator\" : \"" + requestLocator + "\", \"totalRecord\": " + totalRecord + "}");
@@ -324,7 +324,7 @@ public class V2Query {
 				csvArchiver.finalize();
 			}
 			
-		} while(skipBulkV2Query);
+		} while(!skipBulkV2Query);
 		
 		logger.traceExit();
 	}
