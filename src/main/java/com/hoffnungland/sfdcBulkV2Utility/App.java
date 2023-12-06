@@ -46,8 +46,7 @@ public class App
 		    } 
 			
 		} catch (IOException | InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e);
 		} 
 
 		logger.traceExit();
