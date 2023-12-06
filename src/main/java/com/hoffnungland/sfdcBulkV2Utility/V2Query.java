@@ -128,21 +128,21 @@ public class V2Query {
 		return logger.traceExit(response);
 	}
 
-	public static void extractV2Query(String sessionId, String baseUrl, String apiVersion, String jobName, int sleepTime, String query, String columnDelimiter, String tmpDir, String outputDir, String archiveFilenamePrefix, String delTmpFilenamePrefix) throws FileNotFoundException, IOException, InterruptedException {
+	public static void extractV2Query(String sessionId, String baseUrl, String apiVersion, String jobName, int sleepTime, String operation, String query, String columnDelimiter, String tmpDir, String outputDir, String archiveFilenamePrefix, String delTmpFilenamePrefix) throws FileNotFoundException, IOException, InterruptedException {
 		logger.traceEntry();
-		scheduleV2Query(sessionId, baseUrl, apiVersion, jobName, query, columnDelimiter, tmpDir, sleepTime);
+		scheduleV2Query(sessionId, baseUrl, apiVersion, jobName, operation, query, columnDelimiter, tmpDir, sleepTime);
 		bulkV2Query(sessionId, baseUrl, apiVersion, jobName, columnDelimiter, tmpDir, outputDir, archiveFilenamePrefix, delTmpFilenamePrefix);
 		logger.traceExit();
 	}
 
-	public static void scheduleV2Query(String sessionId, String baseUrl, String apiVersion, String jobName, String query, String columnDelimiter, String tmpDir, int sleepTime) throws FileNotFoundException, IOException, InterruptedException {
+	public static void scheduleV2Query(String sessionId, String baseUrl, String apiVersion, String jobName, String operation, String query, String columnDelimiter, String tmpDir, int sleepTime) throws FileNotFoundException, IOException, InterruptedException {
 		logger.traceEntry();
-		launchV2Query(sessionId, baseUrl, apiVersion, jobName, query, columnDelimiter, tmpDir);
+		launchV2Query(sessionId, baseUrl, apiVersion, jobName, operation, query, columnDelimiter, tmpDir);
 		waitV2QueryCompletion(sessionId, baseUrl, apiVersion, jobName, tmpDir, sleepTime);
 		logger.traceExit();
 	}
 
-	public static void launchV2Query(String sessionId, String baseUrl, String apiVersion, String jobName, String query,	String columnDelimiter, String tmpDir) throws FileNotFoundException, IOException {
+	public static void launchV2Query(String sessionId, String baseUrl, String apiVersion, String jobName, String operation, String query,String columnDelimiter, String tmpDir) throws FileNotFoundException, IOException {
 		logger.traceEntry();
 		String fileName = tmpDir + jobName + ".json";
 		File jsonFile = new File(fileName);
@@ -170,7 +170,7 @@ public class V2Query {
 			return;
 		}
 		
-		String jobResponse = createJob(sessionId, baseUrl, apiVersion, fileName, query, columnDelimiter);
+		String jobResponse = createJob(sessionId, baseUrl, apiVersion, operation, query, columnDelimiter);
 		
 		writeJsonProps(fileName, jobResponse);
 		

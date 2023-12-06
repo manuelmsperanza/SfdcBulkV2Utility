@@ -16,8 +16,12 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.csv.QuoteMode;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CsvArchiver {
+	
+	private static final Logger logger = LogManager.getLogger(CsvArchiver.class);
 	
 	CSVFormat csvFormatRetrieve;
 	CSVFormat csvFormatArchive;
@@ -29,6 +33,9 @@ public class CsvArchiver {
 	int idFieldPosition = -1;
 	
 	public void initialize(String archiveFilePath, String archiveFilenamePrefix, String onlyIdFilenamePrefix, String retrieveDelimiter, String archiveDelimiter) throws IOException {
+		
+		logger.traceEntry();
+		
 		char retrieveDelimiterChar = ',';
 		switch (retrieveDelimiter) {
 		case "BACKQUOTE":
@@ -92,9 +99,11 @@ public class CsvArchiver {
 			this.csvFormatOnlyId = CSVFormat.Builder.create().setQuoteMode(QuoteMode.NONE).setEscape('"').setDelimiter('|').build();
 			this.csvPrinterOnlyId = new CSVPrinter(new FileWriter(onlyIdFilenamePrefix + ".csv"), this.csvFormatOnlyId);
 		}
+		logger.traceExit();
 	}
 	
 	public void finalize() throws IOException {
+		logger.traceEntry();
 		this.csvPrinterArchive.close();
 		
 		if(this.csvPrinterOnlyId != null) {
@@ -102,9 +111,11 @@ public class CsvArchiver {
 		}
 		
 		this.buffWriter.close();
+		logger.traceExit();
 	}
 	
 	public void parseResponse(String response, int loopIdx) throws IOException {
+		logger.traceEntry();
 		boolean isHeader = true;
 		CSVParser parser = CSVParser.parse(response, csvFormatRetrieve);
 		for(CSVRecord curRecord : parser.getRecords()) {
@@ -139,6 +150,7 @@ public class CsvArchiver {
 		if(this.csvPrinterOnlyId != null) {
 			this.csvPrinterOnlyId.flush();
 		}
+		logger.traceExit();
 	}
 	
 	

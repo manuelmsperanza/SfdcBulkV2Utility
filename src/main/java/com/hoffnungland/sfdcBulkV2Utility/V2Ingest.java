@@ -19,6 +19,7 @@ public class V2Ingest {
 	private static final Logger logger = LogManager.getLogger(V2Ingest.class);
 	
 	public static String checkLimits(String sessionId, String baseUrl, String apiVersion) throws IOException {
+		logger.traceEntry();
 		String response = null;
 		
 		try(CloseableHttpClient httpclient = HttpClients.createDefault()){
@@ -31,12 +32,13 @@ public class V2Ingest {
 			
 		}
 		
-		return response;
+		return logger.traceExit(response);
 	}
 	
 	
 	
 	public static String createJob(String sessionId, String baseUrl, String apiVersion, String objectName, String contentType, String operation, String columnDelimiter) throws IOException {
+		logger.traceEntry();
 		String response = null;
 		
 		try(CloseableHttpClient httpclient = HttpClients.createDefault()){
@@ -49,12 +51,12 @@ public class V2Ingest {
 			response = httpclient.execute(postRequest, responseClientHandler);
 		}
 		
-		return response;
+		return logger.traceExit(response);
 		
 	}
 	
 	public static String uploadCsvContent(String sessionId, String baseUrl, String apiVersion, String jodId, String csvContent) throws IOException {
-		
+		logger.traceEntry();
 		String response = null;
 		
 		try(CloseableHttpClient httpclient = HttpClients.createDefault()){
@@ -66,10 +68,11 @@ public class V2Ingest {
 			response = httpclient.execute(putRequest, responseClientHandler);
 		}
 		
-		return response;
+		return logger.traceExit(response);
 	}
 	
 	public static String getJobInfo(String sessionId, String baseUrl, String apiVersion, String jodId) throws IOException {
+		logger.traceEntry();
 		String response = null;
 		
 		try(CloseableHttpClient httpclient = HttpClients.createDefault()){
@@ -81,10 +84,11 @@ public class V2Ingest {
 			response = httpclient.execute(getRequest, responseClientHandler);
 		}
 		
-		return response;
+		return logger.traceExit(response);
 	}
 	
 	public static String changeJobStatus(String sessionId, String baseUrl, String apiVersion, String jodId, String status) throws IOException {
+		logger.traceEntry();
 		String response = null;
 		
 		try(CloseableHttpClient httpclient = HttpClients.createDefault()){
@@ -96,10 +100,11 @@ public class V2Ingest {
 			response = httpclient.execute(patchRequest, responseClientHandler);
 		}
 		
-		return response;
+		return logger.traceExit(response);
 	}
 	
 	public static String successfulResults(String sessionId, String baseUrl, String apiVersion, String jodId) throws IOException {
+		logger.traceEntry();
 		String response = null;
 		
 		try(CloseableHttpClient httpclient = HttpClients.createDefault()){
@@ -111,10 +116,11 @@ public class V2Ingest {
 			response = httpclient.execute(getRequest, responseClientHandler);
 		}
 		
-		return response;
+		return logger.traceExit(response);
 	}
 	
 	public static String failedResults(String sessionId, String baseUrl, String apiVersion, String jodId) throws IOException {
+		logger.traceEntry();
 		String response = null;
 		
 		try(CloseableHttpClient httpclient = HttpClients.createDefault()){
@@ -126,10 +132,11 @@ public class V2Ingest {
 			response = httpclient.execute(getRequest, responseClientHandler);
 		}
 		
-		return response;
+		return logger.traceExit(response);
 	}
 	
 	public static String unprocessedrecords(String sessionId, String baseUrl, String apiVersion, String jodId) throws IOException {
+		logger.traceEntry();
 		String response = null;
 		
 		try(CloseableHttpClient httpclient = HttpClients.createDefault()){
@@ -141,7 +148,7 @@ public class V2Ingest {
 			response = httpclient.execute(getRequest, responseClientHandler);
 		}
 		
-		return response;
+		return logger.traceExit(response);
 	}
 	
 }
