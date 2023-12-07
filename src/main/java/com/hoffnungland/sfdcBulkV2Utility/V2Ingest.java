@@ -326,7 +326,7 @@ public class V2Ingest {
 		String jobId = innerObject.get("lastJobId").getAsString();
 		
 		jobResponse = V2Ingest.uploadCsvContent(sessionId, baseUrl, apiVersion, jobId, csvContent);
-		writeJsonProps(fileName, jobResponse);
+		//writeJsonProps(fileName, jobResponse);
 		jobResponse = V2Ingest.changeJobStatus(sessionId, baseUrl, apiVersion, jobId, "UploadComplete");
 		writeJsonProps(fileName, jobResponse);
 		
