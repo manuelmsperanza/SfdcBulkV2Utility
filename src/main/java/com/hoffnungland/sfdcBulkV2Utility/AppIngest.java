@@ -20,6 +20,8 @@ public class AppIngest {
 		int sleepTime = 60;
 		String operation = "";
 		String columnDelimiter = "PIPE";
+		String contentType = "CSV";
+		String objectName = "";
 		String tmpDir = "";
 		String outputDir = "";
 		String archiveFilenamePrefix = "";
@@ -27,7 +29,7 @@ public class AppIngest {
 		String inputFilePath = "";
 		
 		try{
-			//V2Ingest.bulkV2Ingest(sessionId, baseUrl, apiVersion, jobName, sleepTime, archiveFilenamePrefix, delTmpFilenamePrefix, operation, columnDelimiter, inputFilePath, tmpDir, outputDir);    
+			V2Ingest.bulkV2Ingest(sessionId, baseUrl, apiVersion, jobName, sleepTime, objectName, contentType, operation, columnDelimiter, inputFilePath, tmpDir, outputDir);    
 		    V2Ingest.waitV2IngestCompletion(sessionId, baseUrl, apiVersion, jobName, tmpDir, sleepTime);
 		    V2Ingest.getV2IngestResult(sessionId, baseUrl, apiVersion, jobName, tmpDir, outputDir);
 			

@@ -205,12 +205,27 @@ public class V2Ingest {
 		return logger.traceExit(response);
 	}
 	
-	
 	public static void bulkV2Ingest(String sessionId, String baseUrl, String apiVersion, String jobName, int sleepTime, String objectName, String contentType, String operation, String columnDelimiter, String inputFilePath, String tmpDir, String outputDir) throws IOException, InterruptedException {
+		logger.traceEntry();
+		scheduleV2Ingest(sessionId, baseUrl, apiVersion, jobName, objectName, contentType, operation, columnDelimiter, inputFilePath, tmpDir, outputDir);
+		waitV2IngestCompletion(sessionId, baseUrl, apiVersion, jobName, tmpDir, sleepTime);
+		logger.traceExit();
+	}
+	
+	public static void scheduleV2Ingest(String sessionId, String baseUrl, String apiVersion, String jobName, String objectName, String contentType, String operation, String columnDelimiter, String inputFilePath, String tmpDir, String outputDir) throws IOException, InterruptedException {
 		
 		logger.traceEntry();
 		
 		String fileName = tmpDir + jobName + ".json";
+		File jsonFile = new File(fileName);
+		
+		boolean skipBulkV2Ingest = jsonFile.exists();
+				
+		if(skipBulkV2Ingest) {
+			logger.warn("skip");
+			logger.traceExit();
+			return;
+		}
 		
 		char columnDelimiterChar = ',';
 		switch (columnDelimiter) {
@@ -296,7 +311,7 @@ public class V2Ingest {
 			writer.write(csvContent);
 		}
 		startIngestJob(sessionId, baseUrl, apiVersion, fileName, objectName, contentType, operation, columnDelimiter, csvContent);
-		waitV2IngestCompletion(sessionId, baseUrl, apiVersion, jobName, tmpDir, sleepTime);
+		
 		logger.traceExit();
 		
 	}
