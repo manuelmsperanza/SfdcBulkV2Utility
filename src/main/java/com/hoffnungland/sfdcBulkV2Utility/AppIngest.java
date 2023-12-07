@@ -1,5 +1,6 @@
 package com.hoffnungland.sfdcBulkV2Utility;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
@@ -15,7 +16,6 @@ public class AppIngest {
 		String sessionId = "";
 		String baseUrl = "";
 		String apiVersion = "v59.0";
-		String jobId = "";
 		String jobName = "";
 		int sleepTime = 60;
 		String operation = "";
@@ -24,14 +24,26 @@ public class AppIngest {
 		String objectName = "";
 		String tmpDir = "";
 		String outputDir = "";
-		String archiveFilenamePrefix = "";
-		String delTmpFilenamePrefix = null;
-		String inputFilePath = "";
+		String delTmpFilenamePrefix = "";
+		String inputFilePath = tmpDir + delTmpFilenamePrefix + ".csv";
 		
 		try{
-			V2Ingest.bulkV2Ingest(sessionId, baseUrl, apiVersion, jobName, sleepTime, objectName, contentType, operation, columnDelimiter, inputFilePath, tmpDir, outputDir);    
-		    V2Ingest.waitV2IngestCompletion(sessionId, baseUrl, apiVersion, jobName, tmpDir, sleepTime);
-		    V2Ingest.getV2IngestResult(sessionId, baseUrl, apiVersion, jobName, tmpDir, outputDir);
+			V2Ingest.bulkV2Ingest(sessionId, baseUrl, apiVersion, jobName, sleepTime, objectName, contentType, operation, columnDelimiter, inputFilePath, tmpDir, outputDir);
+			
+			String tmpFileName = tmpDir + jobName + ".json";
+			File jsonFile = new File(tmpFileName);
+		    if (jsonFile.delete()) { 
+		      logger.info("Deleted the file: " + jsonFile.getName());
+		    } else {
+		      logger.error("Failed to delete the file.");
+		    }
+		    
+			File inputFileIngest = new File(inputFilePath);
+		    if (inputFileIngest.delete()) { 
+		      logger.info("Deleted the file: " + inputFileIngest.getName());
+		    } else {
+		      logger.error("Failed to delete the file.");
+		    }
 			
 		} catch (IOException | InterruptedException e) {
 			logger.error(e);
