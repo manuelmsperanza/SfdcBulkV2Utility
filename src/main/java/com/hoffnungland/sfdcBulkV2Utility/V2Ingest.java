@@ -209,6 +209,7 @@ public class V2Ingest {
 		logger.traceEntry();
 		scheduleV2Ingest(sessionId, baseUrl, apiVersion, jobName, objectName, contentType, operation, columnDelimiter, inputFilePath, tmpDir, outputDir);
 		waitV2IngestCompletion(sessionId, baseUrl, apiVersion, jobName, tmpDir, sleepTime);
+		getV2IngestResult(sessionId, baseUrl, apiVersion, jobName, tmpDir, outputDir);
 		logger.traceExit();
 	}
 	
@@ -259,7 +260,7 @@ public class V2Ingest {
 		String header = null;
 		long headerSize = 0;
 		long stringSize = 0;
-		int fileCount = 0;
+		//int fileCount = 0;
 		
 		Iterator<CSVRecord> csvRecordIterator = csvParser.iterator();
 		while(csvRecordIterator.hasNext()) {
@@ -286,10 +287,10 @@ public class V2Ingest {
 				if(stringSize + encodedSize > 150*1024*1024){
 					logger.info("flush size " + stringSize);
 					String csvContent = ingestPayload.toString();
-					try(BufferedWriter writer = new BufferedWriter(new FileWriter(outputDir + jobName + "_" + fileCount++ + ".csv"))){
+					/*try(BufferedWriter writer = new BufferedWriter(new FileWriter(outputDir + jobName + "_" + fileCount++ + ".csv"))){
 						
 						writer.write(csvContent);
-					}
+					}*/
 					
 					ingestPayload = new StringBuilder(header);
 					stringSize = headerSize;
@@ -306,10 +307,10 @@ public class V2Ingest {
 		
 		logger.info("flush total record " + stringSize);
 		String csvContent = ingestPayload.toString();
-		try(BufferedWriter writer = new BufferedWriter(new FileWriter(outputDir + jobName + "_" + fileCount++ + ".csv"))){
+		/*try(BufferedWriter writer = new BufferedWriter(new FileWriter(outputDir + jobName + "_" + fileCount++ + ".csv"))){
 			
 			writer.write(csvContent);
-		}
+		}*/
 		startIngestJob(sessionId, baseUrl, apiVersion, fileName, objectName, contentType, operation, columnDelimiter, csvContent);
 		
 		logger.traceExit();
