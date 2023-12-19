@@ -22,7 +22,6 @@ public class App
 		String sessionId = "";
 		String baseUrl = "";
 		String apiVersion = "v59.0";
-		String jobId = "";
 		String jobName = "";
 		int sleepTime = 60;
 		String operation = "query";

@@ -221,8 +221,25 @@ public class V2Ingest {
 		File jsonFile = new File(fileName);
 		
 		boolean skipBulkV2Ingest = jsonFile.exists();
+		
+		if (skipBulkV2Ingest) {
+			try (FileReader fr = new FileReader(jsonFile)) {
 				
+				JsonObject jsonObject = null;
+				JsonObject innerObject = null;
+
+				JsonElement jsonElement = JsonParser.parseReader(fr);
+				jsonObject = jsonElement.getAsJsonObject();
+				innerObject = jsonObject.getAsJsonObject("ingest");
+				skipBulkV2Ingest = innerObject.has("lastJobId");
+				if (skipBulkV2Ingest) {
+					skipBulkV2Ingest = (innerObject.getAsJsonPrimitive("lastJobId") != null);
+				}
+			}
+		}
+		
 		if(skipBulkV2Ingest) {
+					
 			logger.warn("skip");
 			logger.traceExit();
 			return;
@@ -344,6 +361,21 @@ public class V2Ingest {
 		
 		if (skipWaitV2IngestCompletion) {
 			logger.error(fileName + "does not exist. Job must be created");
+		} else {
+			try (FileReader fr = new FileReader(jsonFile)) {
+				
+				JsonObject jsonObject = null;
+				JsonObject innerObject = null;
+
+				JsonElement jsonElement = JsonParser.parseReader(fr);
+				jsonObject = jsonElement.getAsJsonObject();
+				innerObject = jsonObject.getAsJsonObject("ingest");
+				JsonElement jobIdEl = innerObject.get("lastJobId");
+				skipWaitV2IngestCompletion = jobIdEl == null || jobIdEl.getAsString().isEmpty(); 
+				if(skipWaitV2IngestCompletion) {
+					logger.error("Job id does not exists");
+				}
+			}
 		}
 		
 		if(skipWaitV2IngestCompletion) {
