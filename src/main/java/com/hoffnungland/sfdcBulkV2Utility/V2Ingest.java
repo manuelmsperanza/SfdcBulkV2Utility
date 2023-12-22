@@ -57,12 +57,19 @@ public class V2Ingest {
 			try (FileReader fr = new FileReader(jsonFile)) {
 				JsonElement jsonElement = JsonParser.parseReader(fr);
 				jsonObject = jsonElement.getAsJsonObject();
-				innerObject = jsonObject.getAsJsonObject("ingest");
+				//innerObject = jsonObject.getAsJsonObject("ingest");
 			}
 		} else {
 			jsonObject = new JsonObject();
+			//innerObject = new JsonObject();
+			//jsonObject.add("ingest", innerObject);
+		}
+		
+		if(jsonObject.has("query")) {					
+			innerObject = jsonObject.getAsJsonObject("query");
+		} else {
 			innerObject = new JsonObject();
-			jsonObject.add("ingest", innerObject);
+			jsonObject.add("query", innerObject);
 		}
 
 		JsonElement jsonElement = JsonParser.parseString(jobInfo);

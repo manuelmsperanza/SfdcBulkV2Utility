@@ -42,14 +42,21 @@ public class V2Query {
 			try (FileReader fr = new FileReader(jsonFile)) {
 				JsonElement jsonElement = JsonParser.parseReader(fr);
 				jsonObject = jsonElement.getAsJsonObject();
-				innerObject = jsonObject.getAsJsonObject("query");
+				//innerObject = jsonObject.getAsJsonObject("query");
 			}
 		} else {
 			jsonObject = new JsonObject();
+			//innerObject = new JsonObject();
+			//jsonObject.add("query", innerObject);
+		}
+
+		if(jsonObject.has("query")) {					
+			innerObject = jsonObject.getAsJsonObject("query");
+		} else {
 			innerObject = new JsonObject();
 			jsonObject.add("query", innerObject);
 		}
-
+		
 		JsonElement jsonElement = JsonParser.parseString(jobInfo);
 		JsonObject srcJsonObject = jsonElement.getAsJsonObject();
 		for(Entry<String, JsonElement> curEntry : srcJsonObject.entrySet()) {
