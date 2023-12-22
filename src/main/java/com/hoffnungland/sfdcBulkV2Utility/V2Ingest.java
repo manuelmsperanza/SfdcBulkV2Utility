@@ -65,11 +65,11 @@ public class V2Ingest {
 			//jsonObject.add("ingest", innerObject);
 		}
 		
-		if(jsonObject.has("query")) {					
-			innerObject = jsonObject.getAsJsonObject("query");
+		if(jsonObject.has("ingest")) {					
+			innerObject = jsonObject.getAsJsonObject("ingest");
 		} else {
 			innerObject = new JsonObject();
-			jsonObject.add("query", innerObject);
+			jsonObject.add("ingest", innerObject);
 		}
 
 		JsonElement jsonElement = JsonParser.parseString(jobInfo);
