@@ -156,10 +156,11 @@ public class V2Query {
 
 				JsonElement jsonElement = JsonParser.parseReader(fr);
 				jsonObject = jsonElement.getAsJsonObject();
-				innerObject = jsonObject.getAsJsonObject("query");
-				skipLaunchV2Query = innerObject.has("id");
-				if (skipLaunchV2Query) {
-					skipLaunchV2Query = (innerObject.getAsJsonPrimitive("id") != null);
+				if(skipLaunchV2Query = jsonObject.has("query")) {					
+					innerObject = jsonObject.getAsJsonObject("query");
+					if (skipLaunchV2Query = innerObject.has("id")) {
+						skipLaunchV2Query = (innerObject.getAsJsonPrimitive("id") != null);
+					}
 				}
 			}
 		}

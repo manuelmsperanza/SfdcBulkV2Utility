@@ -230,10 +230,11 @@ public class V2Ingest {
 
 				JsonElement jsonElement = JsonParser.parseReader(fr);
 				jsonObject = jsonElement.getAsJsonObject();
-				innerObject = jsonObject.getAsJsonObject("ingest");
-				skipBulkV2Ingest = innerObject.has("lastJobId");
-				if (skipBulkV2Ingest) {
-					skipBulkV2Ingest = (innerObject.getAsJsonPrimitive("lastJobId") != null);
+				if(skipBulkV2Ingest = jsonObject.has("ingest")) {					
+					innerObject = jsonObject.getAsJsonObject("ingest");
+					if (skipBulkV2Ingest = innerObject.has("lastJobId")) {
+						skipBulkV2Ingest = (innerObject.getAsJsonPrimitive("lastJobId") != null);
+					}
 				}
 			}
 		}
