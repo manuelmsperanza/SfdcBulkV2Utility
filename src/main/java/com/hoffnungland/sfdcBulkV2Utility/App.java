@@ -21,14 +21,14 @@ public class App
 			
 		String sessionId = "";
 		String baseUrl = "";
-		String apiVersion = "v59.0";
+		String apiVersion = "v61.0";
 		String jobName = "";
 		int sleepTime = 60;
 		String operation = "query";
 		String query = "";
 		String columnDelimiter = "PIPE";
-		String tmpDir = "";
-		String outputDir = "";
+		String tmpDir = "C:/TOS/Data/tmp/";
+		String outputDir = "C:/TOS/Data/output/";
 		String archiveFilenamePrefix = "";
 		String delTmpFilenamePrefix = null;
 		

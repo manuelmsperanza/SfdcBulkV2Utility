@@ -15,17 +15,17 @@ public class AppIngest {
 		
 		String sessionId = "";
 		String baseUrl = "";
-		String apiVersion = "v59.0";
+		String apiVersion = "v61.0";
 		String jobName = "";
 		int sleepTime = 60;
-		String operation = "";
+		String operation = "delete";
 		String columnDelimiter = "PIPE";
 		String contentType = "CSV";
 		String objectName = "";
-		String tmpDir = "";
-		String outputDir = "";
+		String tmpDir = "C:/TOS/Data/tmp/";
+		String outputDir = "C:/TOS/Data/output/";
 		String delTmpFilenamePrefix = "";
-		String inputFilePath = tmpDir + delTmpFilenamePrefix + ".csv";
+		String inputFilePath = outputDir + delTmpFilenamePrefix + ".csv";
 		
 		try{
 			V2Ingest.bulkV2Ingest(sessionId, baseUrl, apiVersion, jobName, sleepTime, objectName, contentType, operation, columnDelimiter, inputFilePath, tmpDir, outputDir);
