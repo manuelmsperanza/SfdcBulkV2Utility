@@ -16,7 +16,6 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.csv.QuoteMode;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
@@ -276,7 +275,7 @@ public class V2Ingest {
 
 		}
 		
-		CSVFormat csvFormat = CSVFormat.Builder.create().setQuoteMode(QuoteMode.ALL).setDelimiter(columnDelimiterChar).build();
+		CSVFormat csvFormat = CSVFormat.Builder.create().setQuoteMode(QuoteMode.ALL).setDelimiter(columnDelimiterChar).get();
 		
 		File inputFile = new File(inputFilePath);
 		CSVParser csvParser = CSVParser.parse(inputFile, StandardCharsets.UTF_8, csvFormat);		
@@ -303,12 +302,12 @@ public class V2Ingest {
 					return;
 				}
 				ingestPayload.append(line);
-				headerSize = (new Double(Math.ceil(header.getBytes().length/3)*4)).longValue();
+				headerSize = Double.valueOf(Math.ceil(header.getBytes().length / 3) * 4).longValue();
 				stringSize = headerSize;
 				logger.trace(headerSize + " " + header);
 			} else {
 				
-				long encodedSize = (new Double(Math.ceil(line.getBytes().length/3)*4)).longValue();
+				long encodedSize = Double.valueOf(Math.ceil(line.getBytes().length / 3) * 4).longValue();
 				if(stringSize + encodedSize > 150*1024*1024){
 					logger.info("flush size " + stringSize);
 					String csvContent = ingestPayload.toString();

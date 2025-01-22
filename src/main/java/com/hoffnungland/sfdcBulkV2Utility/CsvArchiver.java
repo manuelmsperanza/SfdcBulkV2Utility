@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -19,7 +20,7 @@ import org.apache.commons.csv.QuoteMode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class CsvArchiver {
+public class CsvArchiver implements AutoCloseable {
 	
 	private static final Logger logger = LogManager.getLogger(CsvArchiver.class);
 	
@@ -36,8 +37,8 @@ public class CsvArchiver {
 		
 		logger.traceEntry();
 		
-		this.csvFormatRetrieve = CSVFormat.Builder.create().setQuoteMode(QuoteMode.ALL).setDelimiter(retrieveDelimiterChar).build();
-		this.csvFormatArchive = CSVFormat.Builder.create().setQuoteMode(QuoteMode.ALL).setDelimiter(archiveDelimiterChar).build();
+		this.csvFormatRetrieve = CSVFormat.Builder.create().setQuoteMode(QuoteMode.ALL).setDelimiter(retrieveDelimiterChar).get();
+		this.csvFormatArchive = CSVFormat.Builder.create().setQuoteMode(QuoteMode.ALL).setDelimiter(archiveDelimiterChar).get();
 		
 		String pattern = "yyyyMMddHHmmss";
 		DateFormat dateFormat = new SimpleDateFormat(pattern);
@@ -49,13 +50,13 @@ public class CsvArchiver {
 		this.csvPrinterArchive = this.csvFormatArchive.print(this.buffWriter);
 		
 		if(onlyIdFilenamePrefix != null && !onlyIdFilenamePrefix.isEmpty()) {
-			this.csvFormatOnlyId = CSVFormat.Builder.create().setQuoteMode(QuoteMode.NONE).setEscape('"').setDelimiter('|').build();
+			this.csvFormatOnlyId = CSVFormat.Builder.create().setQuoteMode(QuoteMode.NONE).setEscape('"').setDelimiter('|').get();
 			this.csvPrinterOnlyId = new CSVPrinter(new FileWriter(onlyIdFilenamePrefix + ".csv"), this.csvFormatOnlyId);
 		}
 		logger.traceExit();
 	}
 	
-	public void finalize() throws IOException {
+	public void close() throws IOException {
 		logger.traceEntry();
 		this.csvPrinterArchive.close();
 		
@@ -92,7 +93,7 @@ public class CsvArchiver {
 			}
 			
 			if(doPrint) {
-				this.csvPrinterArchive.printRecord(recordValues);
+				this.csvPrinterArchive.printRecord( Arrays.asList(recordValues));
 				if(this.csvPrinterOnlyId != null) {
 					this.csvPrinterOnlyId.printRecord(recordValues[this.idFieldPosition]);
 				}

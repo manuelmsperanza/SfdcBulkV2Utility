@@ -359,7 +359,7 @@ public class V2Query {
 
 			if(requestLocator == null || "".equals(requestLocator) || "null".equals(requestLocator)){
 				skipBulkV2Query = true;
-				csvArchiver.finalize();
+				csvArchiver.close();
 			}
 			
 		} while(!skipBulkV2Query);
