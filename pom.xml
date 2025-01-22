@@ -137,7 +137,7 @@
 					</archive>
 				</configuration>
 			</plugin>
-			<plugin>
+			<!--plugin>
 				<artifactId>maven-jarsigner-plugin</artifactId>
 				<executions>
 					<execution>
@@ -163,7 +163,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin-->
 	</plugins>
 	<resources>
 			<resource>
