@@ -1,7 +1,10 @@
 package com.hoffnungland.sfdcBulkV2Utility;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,19 +21,38 @@ public class App
 	public static void main(String[] args) {
 		
 		logger.traceEntry();
+		
+		if(args.length < 1){
+			logger.error("Wrong input parameter. Params is: ProjectName");
+			return;
+		}
+		
+		String projectName = args[0];
+		
+		Properties projectPropsFile = new Properties();
+		try (FileInputStream projectFile = new FileInputStream("./etc/" + projectName + ".properties")){
+			projectPropsFile.load(projectFile);
+			projectFile.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 			
-		String sessionId = "";
-		String baseUrl = "";
-		String apiVersion = "v61.0";
-		String jobName = "";
-		int sleepTime = 60;
-		String operation = "query";
-		String query = "";
-		String columnDelimiter = "PIPE";
-		String tmpDir = "C:/TOS/Data/tmp/";
-		String outputDir = "C:/TOS/Data/output/";
-		String archiveFilenamePrefix = "";
-		String delTmpFilenamePrefix = null;
+		String sessionId = projectPropsFile.getProperty("sessionId");
+		String baseUrl = projectPropsFile.getProperty("baseUrl");
+		String apiVersion = projectPropsFile.getProperty("apiVersion");
+		String jobName = projectPropsFile.getProperty("jobName");
+		int sleepTime = Integer.parseInt(projectPropsFile.getProperty("sleepTime"));
+		String operation = projectPropsFile.getProperty("operation");
+		String query = projectPropsFile.getProperty("query");
+		String columnDelimiter = projectPropsFile.getProperty("columnDelimiter");
+		String tmpDir = projectPropsFile.getProperty("tmpDir");
+		String outputDir = projectPropsFile.getProperty("outputDir");
+		String archiveFilenamePrefix = projectPropsFile.getProperty("archiveFilenamePrefix");
+		String delTmpFilenamePrefix = projectPropsFile.getProperty("delTmpFilenamePrefix");
 		
 		try{
 			

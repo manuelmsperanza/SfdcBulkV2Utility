@@ -130,6 +130,22 @@ public class V2Ingest {
 		
 		return logger.traceExit(response);
 	}
+	public static String getJobsInfo(String sessionId, String baseUrl, String apiVersion, String nextRecordsUrl) throws IOException {
+		
+		logger.traceEntry();
+		String response = null;
+
+		try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+
+			HttpGet getRequest = new HttpGet(baseUrl + (nextRecordsUrl == null ? "/services/data/" + apiVersion + "/jobs/ingest" : nextRecordsUrl));
+			getRequest.addHeader("Authorization", "Bearer " + sessionId);
+
+			BasicHttpClientResponseHandler responseClientHandler = new BasicHttpClientResponseHandler();
+			response = httpclient.execute(getRequest, responseClientHandler);
+		}
+
+		return logger.traceExit(response);
+	}
 	
 	public static String getJobInfo(String sessionId, String baseUrl, String apiVersion, String jodId) throws IOException {
 		logger.traceEntry();
