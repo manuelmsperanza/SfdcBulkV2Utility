@@ -2,7 +2,7 @@
 <Configuration status="WARN" monitorInterval="15">
 	<Properties>
 		<Property name="activeProfile">stdout</Property>
-		<Property name="activeLevel">TRACE</Property>
+		<Property name="activeLevel">DEBUG</Property>
 		<Property name="rollingFilename">SfdcBulkV2Utility</Property>
 	</Properties>
 	<Appenders>

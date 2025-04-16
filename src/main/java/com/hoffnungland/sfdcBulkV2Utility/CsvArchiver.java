@@ -73,7 +73,7 @@ public class CsvArchiver implements AutoCloseable {
 		boolean isHeader = true;
 		CSVParser parser = CSVParser.parse(response, this.csvFormatRetrieve);
 		for(CSVRecord curRecord : parser.getRecords()) {
-			logger.debug(curRecord);
+			logger.trace(curRecord);
 			boolean doPrint = true;
 			String[] recordValues = curRecord.values();
 			if(isHeader) {

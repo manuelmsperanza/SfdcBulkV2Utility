@@ -363,6 +363,7 @@ public class V2Query {
 		int loopIdx = 0;
 		skipBulkV2Query = false;
 		do {
+			logger.debug("Get request " + requestLocator);
 			SfdcHttpClientResponse jobResponse = getQueryResult(sessionId, baseUrl, apiVersion, jobId, requestLocator, 0);
 			
 			requestLocator = jobResponse.mapHeaders.get("Sforce-Locator");
