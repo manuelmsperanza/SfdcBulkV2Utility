@@ -5,7 +5,7 @@
 
   <groupId>com.hoffnungland</groupId>
   <artifactId>sfdcbulkv2utility</artifactId>
-  <version>0.0.20-SNAPSHOT</version>
+  <version>0.0.20</version>
 
   <name>SfdcBulkV2Utility</name>
   <url>http://hoffnungland.com</url>
@@ -22,7 +22,7 @@
 	<scm>
 		<connection>scm:git:https://github.com/manuelmsperanza/SfdcBulkV2Utility.git</connection>
 		<developerConnection>scm:git:git@github.com:manuelmsperanza/SfdcBulkV2Utility.git</developerConnection>
-		<tag>sfdcbulkv2utility-56.0.28</tag>
+		<tag>sfdcbulkv2utility-0.0.20</tag>
 	</scm>
 	<issueManagement>
 		<system>GitHub</system>
